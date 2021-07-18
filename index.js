@@ -9,17 +9,17 @@ var _difference = require('lodash/difference');
 var _values = require('lodash/values');
 var _uniq = require('lodash/uniq');
 var _flatten = require('lodash/flatten');
-var babel = require('@babel/core');
+// var babel = require('@babel/core');
 var parser = require('@typescript-eslint/typescript-estree');
 var glob = require('glob');
 var resolveGlob = require('./resolve-glob');
 
-var babelOptions = {};
-try {
-    babelOptions = JSON.parse(fs.readFileSync('.babelrc', 'utf-8'));
-} catch (e) {
-    // No custom babel configuration found - using defaults
-}
+// var babelOptions = {};
+// try {
+//     babelOptions = JSON.parse(fs.readFileSync('.babelrc', 'utf-8'));
+// } catch (e) {
+//     // No custom babel configuration found - using defaults
+// }
 
 var defaultOptions = {
     packageImports: true,
@@ -33,8 +33,8 @@ var defaultOptions = {
 // @params {boolean} [options.packageImports] True to return package imports, defaults to true.
 // @params {boolean} [options.absoluteImports] True to return absolute imports, defaults to false.
 // @params {boolean} [options.relativeImports] True to return relative imports, defaults to false.
-var findImports = function(patterns, options, cwd) {
-    var cwd = cwd ? cwd : process.cwd();
+var findImports = function(patterns, options, _cwd) {
+    var cwd = _cwd ? _cwd : process.cwd();
     var requiredModules = {};
     var filepaths = [];
     var addModule = function(modulePath, value) {
@@ -88,10 +88,8 @@ var findImports = function(patterns, options, cwd) {
         }
 
         try {
-            var result = babel.transformFileSync(filepath, babelOptions);
-            var tree = parser.parse(result.code, {
-                sourceType: 'module'
-            });
+            // var result = babel.transformFileSync(filepath, babelOptions);
+            var tree = parser.parse(fs.readFileSync(filepath).toString());
             var modulePath = path.relative(cwd, filepath);
 
             requiredModules[modulePath] = [];

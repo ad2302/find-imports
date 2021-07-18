@@ -10,7 +10,7 @@ var _values = require('lodash/values');
 var _uniq = require('lodash/uniq');
 var _flatten = require('lodash/flatten');
 var babel = require('@babel/core');
-var esprima = require('esprima');
+var parser = require('@typescript-eslint/typescript-estree');
 var glob = require('glob');
 var resolveGlob = require('./resolve-glob');
 
@@ -33,8 +33,8 @@ var defaultOptions = {
 // @params {boolean} [options.packageImports] True to return package imports, defaults to true.
 // @params {boolean} [options.absoluteImports] True to return absolute imports, defaults to false.
 // @params {boolean} [options.relativeImports] True to return relative imports, defaults to false.
-var findImports = function(patterns, options , cwd ) {
-    var cwd = cwd ? cwd : process.cwd()
+var findImports = function(patterns, options, cwd) {
+    var cwd = cwd ? cwd : process.cwd();
     var requiredModules = {};
     var filepaths = [];
     var addModule = function(modulePath, value) {
@@ -69,12 +69,12 @@ var findImports = function(patterns, options , cwd ) {
         patterns = [].concat(patterns || []);
         patterns.forEach(function(pattern) {
             // Make a glob pattern absolute
-            pattern = resolveGlob(pattern,{base:cwd});
+            pattern = resolveGlob(pattern, {base: cwd});
 
             if (pattern.charAt(0) === '!') {
-                negatives = negatives.concat(glob.sync(pattern.slice(1) ,{base:cwd}));
+                negatives = negatives.concat(glob.sync(pattern.slice(1), {base: cwd}));
             } else {
-                positives = positives.concat(glob.sync(pattern,{base:cwd}));
+                positives = positives.concat(glob.sync(pattern, {base: cwd}));
             }
         });
 
@@ -89,7 +89,7 @@ var findImports = function(patterns, options , cwd ) {
 
         try {
             var result = babel.transformFileSync(filepath, babelOptions);
-            var tree = esprima.parse(result.code, {
+            var tree = parser.parse(result.code, {
                 sourceType: 'module'
             });
             var modulePath = path.relative(cwd, filepath);

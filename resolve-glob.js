@@ -1,6 +1,6 @@
 /* eslint no-ternary: 0 */
 var path = require('path');
-var extend = require('lodash/extend')
+var extend = require('lodash/extend');
 // Make a glob pattern absolute
 module.exports = function(glob, options) {
     options = extend(options);

@@ -1,9 +1,9 @@
 /* eslint no-ternary: 0 */
 var path = require('path');
-
+var extend = require('lodash/extend')
 // Make a glob pattern absolute
 module.exports = function(glob, options) {
-    options = Object.create({}, options);
+    options = extend(options);
     options.base = options.base
         ? path.resolve(options.base)
         : process.cwd();

@@ -33,7 +33,8 @@ var defaultOptions = {
 // @params {boolean} [options.packageImports] True to return package imports, defaults to true.
 // @params {boolean} [options.absoluteImports] True to return absolute imports, defaults to false.
 // @params {boolean} [options.relativeImports] True to return relative imports, defaults to false.
-var findImports = function(patterns, options) {
+var findImports = function(patterns, options , cwd ) {
+    var cwd = cwd ? cwd : process.cwd()
     var requiredModules = {};
     var filepaths = [];
     var addModule = function(modulePath, value) {
@@ -68,12 +69,12 @@ var findImports = function(patterns, options) {
         patterns = [].concat(patterns || []);
         patterns.forEach(function(pattern) {
             // Make a glob pattern absolute
-            pattern = resolveGlob(pattern);
+            pattern = resolveGlob(pattern,{base:cwd});
 
             if (pattern.charAt(0) === '!') {
-                negatives = negatives.concat(glob.sync(pattern.slice(1)));
+                negatives = negatives.concat(glob.sync(pattern.slice(1) ,{base:cwd}));
             } else {
-                positives = positives.concat(glob.sync(pattern));
+                positives = positives.concat(glob.sync(pattern,{base:cwd}));
             }
         });
 
@@ -91,7 +92,7 @@ var findImports = function(patterns, options) {
             var tree = esprima.parse(result.code, {
                 sourceType: 'module'
             });
-            var modulePath = path.relative(process.cwd(), filepath);
+            var modulePath = path.relative(cwd, filepath);
 
             requiredModules[modulePath] = [];
 

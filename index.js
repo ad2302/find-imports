@@ -11,7 +11,7 @@ var _uniq = require('lodash/uniq');
 var _flatten = require('lodash/flatten');
 // var babel = require('@babel/core');
 var parser = require('@typescript-eslint/typescript-estree');
-var glob = require('glob');
+var glob = require('fast-glob');
 var resolveGlob = require('./resolve-glob');
 
 // var babelOptions = {};

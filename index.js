@@ -62,7 +62,7 @@ var findImports = function(patterns, options, _cwd) {
     // options
     options = Object.assign({}, defaultOptions, options || {});
     var ignore = options.ignore || []
-
+    var absolute = options.absolute || false
     { // glob patterns
         var positives = [];
         var negatives = [];
@@ -73,9 +73,9 @@ var findImports = function(patterns, options, _cwd) {
             pattern = resolveGlob(pattern, {base: cwd});
 
             if (pattern.charAt(0) === '!') {
-                negatives = negatives.concat(glob.sync(pattern.slice(1), {base: cwd,ignore:ignore}));
+                negatives = negatives.concat(glob.sync(pattern.slice(1), {base: cwd,ignore:ignore,absolute:absolute}));
             } else {
-                positives = positives.concat(glob.sync(pattern, {base: cwd,ignore:ignore}));
+                positives = positives.concat(glob.sync(pattern, {base: cwd,ignore:ignore,absolute:absolute}));
             }
         });
 

@@ -1,6 +1,6 @@
 {
   "name": "@ad2302/find-imports",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Find all imported modules in JavaScript files.",
   "homepage": "https://github.com/cheton/find-imports",
   "main": "dist/index.js",

@@ -3,12 +3,13 @@
   "version": "1.1.1",
   "description": "Find all imported modules in JavaScript files.",
   "homepage": "https://github.com/cheton/find-imports",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "scripts": {
-    "prepublishOnly": "NODE_OPTIONS=\"--trace-warnings\" npm run eslint && npm test",
+    "tscheck":"tsc -p . --noEmit",
+    "prepublishOnly": "rimraf dist && rollup -c rollup.config.ts",
     "eslint": "eslint *.js",
-    "test": "tap test/*.js --node-arg=--require --node-arg=@babel/register --no-coverage",
-    "coveralls": "tap test/*.js --coverage --coverage-report=text-lcov --nyc-arg=--require --nyc-arg=@babel/register --nyc-arg=--require | coveralls"
+    "test": "tap --node-arg=--loader=ts-node/esm --node-arg=--no-warnings --node-arg=--experimental-specifier-resolution=node  \"tests/**/*.spec.ts\""
   },
   "author": "Cheton Wu <cheton@gmail.com>",
   "license": "MIT",
@@ -16,41 +17,36 @@
     "type": "git",
     "url": "git@github.com:cheton/find-imports.git"
   },
+  "engines": {
+    "node": ">= 10"
+  },
   "keywords": [],
   "dependencies": {
     "@typescript-eslint/typescript-estree": "^4.28.3",
-    "ensure-array": "^1.0.0",
     "fast-glob": "^3.2.7",
-    "lodash": "^4.17.4",
+    "lodash.flatten": "^4.4.0",
+    "lodash.get": "^4.4.2",
+    "lodash.uniq": "^4.5.0",
+    "lodash.values": "^4.3.0",
     "typescript": "^4.3.5"
   },
   "devDependencies": {
-    "@babel/core": "^7.14.6",
-    "@babel/plugin-proposal-class-properties": "^7.0.0",
-    "@babel/plugin-proposal-decorators": "^7.0.0",
-    "@babel/plugin-proposal-do-expressions": "^7.0.0",
-    "@babel/plugin-proposal-export-default-from": "^7.0.0",
-    "@babel/plugin-proposal-export-namespace-from": "^7.0.0",
-    "@babel/plugin-proposal-function-bind": "^7.0.0",
-    "@babel/plugin-proposal-function-sent": "^7.0.0",
-    "@babel/plugin-proposal-json-strings": "^7.0.0",
-    "@babel/plugin-proposal-logical-assignment-operators": "^7.0.0",
-    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.0.0",
-    "@babel/plugin-proposal-numeric-separator": "^7.0.0",
-    "@babel/plugin-proposal-optional-chaining": "^7.0.0",
-    "@babel/plugin-proposal-pipeline-operator": "^7.0.0",
-    "@babel/plugin-proposal-throw-expressions": "^7.0.0",
-    "@babel/plugin-syntax-dynamic-import": "^7.0.0",
-    "@babel/plugin-syntax-import-meta": "^7.0.0",
-    "@babel/preset-env": "^7.0.0",
-    "@babel/register": "^7.14.5",
+    "ensure-array": "^1.0.0",
+    "@rollup/plugin-commonjs": "^20.0.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.0.4",
+    "@rollup/plugin-typescript": "^8.2.5",
+    "@types/lodash.difference": "^4.5.6",
+    "@types/lodash.flatten": "^4.4.6",
+    "@types/lodash.get": "^4.4.6",
+    "@types/lodash.uniq": "^4.5.6",
+    "@types/lodash.values": "^4.3.6",
     "coveralls": "^3.1.0",
     "eslint": "^6.8.0",
-    "tap": "^15.0.9"
-  },
-  "nyc": {
-    "exclude": [
-      "test/index.js"
-    ]
+    "rimraf": "^3.0.2",
+    "rollup-plugin-auto-external": "^2.0.0",
+    "rollup-plugin-typescript2": "^0.30.0",
+    "tap": "^15.0.9",
+    "ts-node": "^10.2.1"
   }
 }

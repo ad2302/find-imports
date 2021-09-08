@@ -1,20 +1,20 @@
 import { test } from 'tap';
-import findImports from '..';
+import { findImports } from '../src';
 
-test('should skip directory in glob pattern', (t) => {
+void test('should skip directory in glob pattern', async (t) => {
     const list = [
-        'test/fixtures/'
+        'tests/fixtures/'
     ];
-    const result = findImports(list);
+    const result = await findImports(list);
     const wanted = {};
     t.same(result, wanted);
-    t.end();
+    
 });
 
-test('polyfill', (t) => {
-    const result = findImports('test/fixtures/polyfill.js');
+void test('polyfill', async (t) => {
+    const result = await findImports('tests/fixtures/polyfill.js');
     const wanted = {
-        'test/fixtures/polyfill.js': [
+        'tests/fixtures/polyfill.js': [
             'es5-shim/es5-shim',
             'es5-shim/es5-sham',
             'es6-shim/es6-shim',
@@ -34,13 +34,13 @@ test('polyfill', (t) => {
         ]
     };
     t.same(result, wanted);
-    t.end();
+    
 });
 
-test('single glob pattern', (t) => {
-    const result = findImports('test/fixtures/app.js');
+void test('single glob pattern', async (t) => {
+    const result = await findImports('tests/fixtures/app.js');
     const wanted = {
-        'test/fixtures/app.js': [
+        'tests/fixtures/app.js': [
             'lodash',
             'fs',
             'path',
@@ -66,17 +66,17 @@ test('single glob pattern', (t) => {
         ]
     };
     t.same(result, wanted);
-    t.end();
+    
 });
 
-test('a list of glob patterns', (t) => {
+void test('a list of glob patterns', async (t) => {
     const files = [
-        'test/fixtures/**/app.js',
-        'test/fixtures/**/app.spec.js'
+        'tests/fixtures/**/app.js',
+        'tests/fixtures/**/app.spec.js'
     ];
-    const result = findImports(files);
+    const result = await findImports(files);
     const wanted = {
-        'test/fixtures/app.js': [
+        'tests/fixtures/app.js': [
             'lodash',
             'fs',
             'path',
@@ -100,20 +100,20 @@ test('a list of glob patterns', (t) => {
             'i18next-express-middleware',
             'hogan.js'
         ],
-        'test/fixtures/app.spec.js': [
+        'tests/fixtures/app.spec.js': [
             'tap'
         ]
     };
     t.same(result, wanted);
-    t.end();
+    
 });
 
-test('flatten output', (t) => {
+void test('flatten output', async (t) => {
     const files = [
-        'test/fixtures/**/app.js',
-        'test/fixtures/**/app.spec.js'
+        'tests/fixtures/**/app.js',
+        'tests/fixtures/**/app.spec.js'
     ];
-    const result = findImports(files, { flatten: true });
+    const result = await findImports(files, { flatten: true });
     const wanted = [
         'lodash',
         'fs',
@@ -140,16 +140,15 @@ test('flatten output', (t) => {
         'tap'
     ];
     t.same(result, wanted);
-    t.end();
 });
 
-test('relative imports', (t) => {
+void test('relative imports', async (t) => {
     const files = [
-        'test/fixtures/relative-imports.js',
+        'tests/fixtures/relative-imports.js',
     ];
-    const result = findImports(files, { relativeImports: true });
+    const result = await findImports(files, { relativeImports: true });
     const wanted = {
-        'test/fixtures/relative-imports.js': [
+        'tests/fixtures/relative-imports.js': [
             './lib/urljoin',
             './lib/log',
             './config/settings',
@@ -162,16 +161,15 @@ test('relative imports', (t) => {
         ]
     };
     t.same(result, wanted);
-    t.end();
 });
 
-test('absolute imports', (t) => {
+void test('absolute imports', async (t) => {
     const files = [
-        'test/fixtures/absolute-imports.js',
+        'tests/fixtures/absolute-imports.js',
     ];
-    const result = findImports(files, { absoluteImports: true });
+    const result = await findImports(files, { absoluteImports: true });
     const wanted = {
-        'test/fixtures/absolute-imports.js': [
+        'tests/fixtures/absolute-imports.js': [
             '/lib/urljoin',
             '/lib/log',
             '/config/settings',
@@ -184,16 +182,16 @@ test('absolute imports', (t) => {
         ]
     };
     t.same(result, wanted);
-    t.end();
+    
 });
 
-test('only package imports', (t) => {
+void test('only package imports', async (t) => {
     const files = [
-        'test/fixtures/mock-imports.js'
+        'tests/fixtures/mock-imports.js'
     ];
-    const result = findImports(files);
+    const result = await findImports(files);
     const wanted = {
-        'test/fixtures/mock-imports.js': [
+        'tests/fixtures/mock-imports.js': [
             'package1',
             'package2',
             'package3',
@@ -201,29 +199,29 @@ test('only package imports', (t) => {
         ]
     };
     t.same(result, wanted);
-    t.end();
+    
 });
 
-test('no package imports', (t) => {
+void test('no package imports', async (t) => {
     const files = [
-        'test/fixtures/mock-imports.js'
+        'tests/fixtures/mock-imports.js'
     ];
-    const result = findImports(files, { packageImports: false });
+    const result = await findImports(files, { packageImports: false });
     const wanted = {
-        'test/fixtures/mock-imports.js': [
+        'tests/fixtures/mock-imports.js': [
         ]
     };
     t.same(result, wanted);
-    t.end();
+    
 });
 
-test('only absolute imports', (t) => {
+void test('only absolute imports', async (t) => {
     const files = [
-        'test/fixtures/mock-imports.js'
+        'tests/fixtures/mock-imports.js'
     ];
-    const result = findImports(files, { absoluteImports: true, packageImports: false });
+    const result = await findImports(files, { absoluteImports: true, packageImports: false });
     const wanted = {
-        'test/fixtures/mock-imports.js': [
+        'tests/fixtures/mock-imports.js': [
             '/absolute1',
             '/absolute2',
             '/absolute3',
@@ -231,16 +229,16 @@ test('only absolute imports', (t) => {
         ]
     };
     t.same(result, wanted);
-    t.end();
+    
 });
 
-test('only relative imports', (t) => {
+void test('only relative imports', async (t) => {
     const files = [
-        'test/fixtures/mock-imports.js'
+        'tests/fixtures/mock-imports.js'
     ];
-    const result = findImports(files, { relativeImports: true, packageImports: false });
+    const result = await findImports(files, { relativeImports: true, packageImports: false });
     const wanted = {
-        'test/fixtures/mock-imports.js': [
+        'tests/fixtures/mock-imports.js': [
             './relative1',
             './relative2',
             './relative3',
@@ -248,22 +246,22 @@ test('only relative imports', (t) => {
         ]
     };
     t.same(result, wanted);
-    t.end();
+    
 });
 
-test('syntax errors', (t) => {
-    const result = findImports('test/fixtures/syntax-errors.js');
+void test('syntax errors', async (t) => {
+    const result = await findImports('tests/fixtures/syntax-errors.js');
     const wanted = {};
     t.same(result, wanted);
-    t.end();
+    
 });
 
-test('negative glob', (t) => {
+void test('negative glob', async (t) => {
     const list = [
-        'test/fixtures/**/app*.js',
-        '!test/fixtures/**/*.spec.js' // exclude *.spec.js
+        'tests/fixtures/**/app*.js',
+        '!tests/fixtures/**/*.spec.js' // exclude *.spec.js
     ];
-    const result = findImports(list, { flatten: true });
+    const result = await findImports(list, { flatten: true });
     const wanted = [
         'lodash',
         'fs',
@@ -289,5 +287,5 @@ test('negative glob', (t) => {
         'hogan.js'
     ];
     t.same(result, wanted);
-    t.end();
+    
 });

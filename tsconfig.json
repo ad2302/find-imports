@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+      "allowJs": true,
+      "importHelpers": true,
+      "esModuleInterop": true,
+      "outDir": "dist",
+      "moduleResolution": "Node",
+      "module": "ESNext",
+      "sourceMap": false,
+      "strict": false,
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "noImplicitReturns": true,
+      "noFallthroughCasesInSwitch": true,
+      "skipLibCheck": true,
+      "target": "es2018",
+      "typeRoots": ["types"]
+    },
+    "ts-node": {
+      "compilerOptions": {
+        "module": "CommonJS"
+      }
+    },
+    "exclude": ["rollup.config.ts", "dist", "tests/fixtures"]
+  }

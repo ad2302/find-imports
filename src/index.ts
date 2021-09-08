@@ -42,14 +42,14 @@ function addModule(
   value: string
 ) {
   if (value[0] === "/") {
-    if (!!options.absoluteImports) {
+    if (options.absoluteImports) {
       records[modulePath].push(value);
     }
   } else if (value[0] === ".") {
-    if (!!options.relativeImports) {
+    if (options.relativeImports) {
       records[modulePath].push(value);
     }
-  } else if (!!options.packageImports) {
+  } else if (options.packageImports) {
     records[modulePath].push(value);
   }
 }
@@ -81,8 +81,8 @@ export async function findImports(
   filePaths.forEach(function (filepath) {
     let modulePath: string = "";
     try {
-      const tree = parser.parse(fs.readFileSync(filepath).toString());
       modulePath = path.relative(cwd, filepath);
+      const tree = parser.parse(fs.readFileSync(filepath).toString());
 
       (requiredModules as Record<string, string[]>)[modulePath] = [];
 
@@ -97,14 +97,13 @@ export async function findImports(
         ) {
           addModule(
             requiredModules as Record<string, string[]>,
-            options,
+            _options,
             modulePath,
             // @ts-ignore
             node.expression.callee.object.arguments[0].value
           );
           return;
-        }
-        if (
+        } else if (
           node.type === parser.AST_NODE_TYPES.ExpressionStatement &&
           node.expression.type === parser.AST_NODE_TYPES.CallExpression &&
           // @ts-ignore
@@ -112,21 +111,19 @@ export async function findImports(
         ) {
           addModule(
             requiredModules as Record<string, string[]>,
-            options,
+            _options,
             modulePath,
             // @ts-ignore
             node.expression.arguments[0].value as unknown as string
           );
           return;
-        }
-
-        if (node.type === "VariableDeclaration") {
+        } else if (node.type === "VariableDeclaration") {
           node.declarations.forEach(function (decl) {
             var expr = decl.init;
             if (isRequireExpression(expr)) {
               addModule(
                 requiredModules as Record<string, string[]>,
-                options,
+                _options,
                 modulePath,
                 _get(expr, "arguments[0].value")
               );
@@ -138,7 +135,7 @@ export async function findImports(
               if (isRequireExpression(exprArgument)) {
                 addModule(
                   requiredModules as Record<string, string[]>,
-                  options,
+                  _options,
                   modulePath,
                   _get(exprArgument, "arguments[0].value")
                 );
@@ -146,23 +143,19 @@ export async function findImports(
             });
           });
           return;
-        }
-
-        if (node.type === "ImportDeclaration") {
+        } else if (node.type === "ImportDeclaration") {
           addModule(
             requiredModules as Record<string, string[]>,
-            options,
+            _options,
             modulePath,
             // @ts-ignore
-            node.source
-              .value
+            node.source.value
           );
           return;
-        }
-        if (node.type === "ExportAllDeclaration") {
+        } else if (node.type === "ExportAllDeclaration") {
           addModule(
             requiredModules as Record<string, string[]>,
-            options,
+            _options,
             modulePath,
             // @ts-ignore
             node.source.value
@@ -174,7 +167,6 @@ export async function findImports(
       console.error("Error in `" + modulePath + "`: " + e);
     }
   });
-
   if (options.flatten) {
     requiredModules = _uniq(_flatten(_values(requiredModules)));
   }
